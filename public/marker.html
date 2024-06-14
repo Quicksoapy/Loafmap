@@ -1,0 +1,35 @@
+<form onsubmit="validateForm()">
+    <div class="container">
+      <label>description:</label>
+      <input type="text" placeholder="Enter description" name="desc"><br>
+      Latitude: <input type="text" id="latitudeInput" name="latitude"><br>
+      Longitude: <input type="text" id="longitudeInput" name="longitude"><br>
+      <input type="file" id="myFile" name="filename">
+      <br>
+      <button type="submit">Submit</button>
+    </div>
+  </form> 
+  
+  <script>
+    function validateForm() {
+        var latitude = document.getElementById("latitudeInput").value.trim();
+        var longitude = document.getElementById("longitudeInput").value.trim();
+
+        // Regular expressions to match latitude and longitude formats
+        var latRegex = /^-?([1-8]?[0-9](\.[0-9]+)?|90(\.0+)?)$/;
+        var lonRegex = /^-?((1[0-7]|[1-9])?\d(\.\d+)?|180(\.0+)?)$/;
+
+        if (!latRegex.test(latitude)) {
+            alert("Please enter a valid latitude (-90 to 90 degrees)");
+            return false;
+        }
+
+        if (!lonRegex.test(longitude)) {
+            alert("Please enter a valid longitude (-180 to 180 degrees)");
+            return false;
+        }
+
+        // If both latitude and longitude are valid
+        return true;
+    }
+</script>
