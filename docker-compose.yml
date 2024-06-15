@@ -1,0 +1,25 @@
+services:
+  database:
+    image: 'postgres:latest'
+
+    ports:
+      - 5432:5432
+
+    secrets:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+
+    environment:
+      POSTGRES_USER_FILE: /run/secrets/POSTGRES_USER
+      POSTGRES_PASSWORD_FILE: /run/secrets/POSTGRES_PASSWORD
+      POSTGRES_DB: loafmap_db
+    
+    volumes:
+      - ./postgresql/data:/var/lib/postgresql/data:rw
+      - ./postgresql/sql:/docker-entrypoint-initdb.d:ro
+
+secrets:
+  POSTGRES_USER:
+    file: ./.secrets/POSTGRES_USER
+  POSTGRES_PASSWORD:
+    file: ./.secrets/POSTGRES_PASSWORD
