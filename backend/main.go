@@ -14,4 +14,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	if err = settings.Database.DbCreateConnection(); err != nil {
+		log.Fatal(err)
+	}
 }

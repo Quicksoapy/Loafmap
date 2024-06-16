@@ -6,6 +6,6 @@ type Account struct {
 	Password string `json:"password,omitempty"`
 }
 
-func addAccount() {
-
+func (account Account) Add() {
+	database.Query("")
 }

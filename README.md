@@ -15,3 +15,11 @@ cd Loafmap
 ```bash
 cp --no-clobber --recursive --no-target-directory .secrets.example .secrets
 ```
+
+## Usage
+
+Run the application with a config using the `--config` or `-c` flag like so:
+
+```bash
+loafmap --config ./config.example.json
+```
