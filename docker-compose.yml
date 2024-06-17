@@ -15,7 +15,7 @@ services:
       POSTGRES_DB: loafmap_db
     
     volumes:
-      - ./postgresql/data:/var/lib/postgresql/data:rw
+      # - ./postgresql/data:/var/lib/postgresql/data:rw
       - ./postgresql/sql:/docker-entrypoint-initdb.d:ro
 
     restart: unless-stopped
