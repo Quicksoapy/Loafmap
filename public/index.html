@@ -31,13 +31,13 @@
 
         function addMarkers(data) {
             data.forEach(function(marker) {
-                L.marker([marker.lat, marker.lng])
-                    .bindPopup('<b>' + marker.title + '</b><br>' + marker.description)
+                L.marker([marker.latitude, marker.longitude])
+                    .bindPopup(marker.description)
                     .addTo(map);
             });
         }
 
-        fetch('markers.json')
+        fetch('http://localhost:4564/marker')
           .then(response => {
             if (!response.ok) {
               throw new Error('Network response was not ok ' + response.statusText);

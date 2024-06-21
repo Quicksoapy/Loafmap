@@ -2,12 +2,9 @@ package accounts
 
 import (
 	"encoding/json"
-	"fmt"
-	"io"
 	"loafmap/backend/internal/api/cookies"
 	"loafmap/backend/internal/database"
 	"net/http"
-	"strconv"
 )
 
 var Register = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -18,65 +15,23 @@ var Register = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode("OKOK")
 
-	v := &database.Account{}
+	a := database.Account{Username: r.URL.Query().Get("username"), Password: r.URL.Query().Get("password")}
 
-	body, err := io.ReadAll(r.Body)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		_, err := fmt.Fprint(w, err)
-		if err != nil {
-			return
-		}
-		return
-	}
-
-	err = json.Unmarshal(body, v)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		_, err := fmt.Fprint(w, err)
-		if err != nil {
-			return
-		}
-		return
-	}
-
-	database.Account.Add(*v)
+	database.Account.Add(a)
 })
 
 var Login = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	// return "OKOK"
 
-	json.NewEncoder(w).Encode("OKOK")
+	a := database.Account{Username: r.URL.Query().Get("username"), Password: r.URL.Query().Get("password")}
 
-	v := &database.Account{}
-
-	body, err := io.ReadAll(r.Body)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		_, err := fmt.Fprint(w, err)
-		if err != nil {
-			return
-		}
-		return
-	}
-
-	err = json.Unmarshal(body, v)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		_, err := fmt.Fprint(w, err)
-		if err != nil {
-			return
-		}
-		return
-	}
-
-	if !database.Account.Authenticate(*v) {
+	if !database.Account.Authenticate(a) {
+		json.NewEncoder(w).Encode("wrong login")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	cookies.SetAccountCookie(w, strconv.FormatUint(uint64(v.ID), 10))
+	cookies.SetAccountCookie(w, a.Username)
 })

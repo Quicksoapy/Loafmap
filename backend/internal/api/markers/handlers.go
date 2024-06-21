@@ -2,11 +2,10 @@ package markers
 
 import (
 	"encoding/json"
-	"fmt"
-	"io"
 	"loafmap/backend/internal/database"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 var GetAll = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -14,7 +13,7 @@ var GetAll = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	// return "OKOK"
-	json.NewEncoder(w).Encode("OKOK")
+	// json.NewEncoder(w).Encode("OKOK")
 
 	markers, err := database.GetAllMarkers()
 	if err != nil {
@@ -42,29 +41,16 @@ var Add = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode("OKOK")
 
-	v := &database.Marker{}
-
-	body, err := io.ReadAll(r.Body)
+	userId, err := strconv.ParseUint(r.URL.Query().Get("userid"), 10, 32)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		_, err := fmt.Fprint(w, err)
-		if err != nil {
-			return
-		}
+		print(err)
 		return
 	}
 
-	err = json.Unmarshal(body, v)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		_, err := fmt.Fprint(w, err)
-		if err != nil {
-			return
-		}
-		return
-	}
+	m := database.Marker{UserId: uint(userId), Description: r.URL.Query().Get("description"), Latitude: r.URL.Query().Get("latitude"),
+		Longitude: r.URL.Query().Get("longitude"), ImageId: r.URL.Query().Get("imageid")}
 
-	database.Marker.Add(*v)
+	database.Marker.Add(m)
 })
 
 var Delete = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -75,27 +61,13 @@ var Delete = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode("OKOK")
 
-	v := &database.Marker{}
-
-	body, err := io.ReadAll(r.Body)
+	id, err := strconv.ParseUint(r.URL.Query().Get("id"), 10, 32)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		_, err := fmt.Fprint(w, err)
-		if err != nil {
-			return
-		}
+		print(err)
 		return
 	}
 
-	err = json.Unmarshal(body, v)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		_, err := fmt.Fprint(w, err)
-		if err != nil {
-			return
-		}
-		return
-	}
+	m := database.Marker{ID: uint(id)}
 
-	database.Marker.Delete(*v)
+	database.Marker.Delete(m)
 })

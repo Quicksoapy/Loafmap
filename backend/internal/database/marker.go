@@ -11,13 +11,12 @@ type Marker struct {
 	ImageId     string    `json:"image"`
 	UserId      uint      `json:"userid"`
 	Latitude    string    `json:"latitude"`
-	Longitude   string    `jsone:"longitude"`
+	Longitude   string    `json:"longitude"`
 }
 
 func (marker Marker) Add() error {
 	_, err := database.Exec("INSERT INTO markers (userid, description, latitude, longitude, datetime, imageid)"+
-		" VALUES ($1, $2, $3, $4, $5, $6); ", marker.UserId, marker.Description, marker.Latitude, marker.Longitude, marker.Datetime, marker.ImageId)
-
+		" VALUES ($1, $2, $3, $4, $5, $6); ", marker.UserId, marker.Description, marker.Latitude, marker.Longitude, time.Now(), marker.ImageId)
 	return err
 }
 

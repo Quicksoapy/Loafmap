@@ -19,12 +19,15 @@ func HandleRequests(settings Settings) (err error) {
 	router.Handle("/marker/add", markers.Add).Methods("POST", "OPTIONS")
 	router.Handle("/marker/delete", markers.Delete).Methods("POST", "OPTIONS")
 
-	router.Handle("/account/login", accounts.Login).Methods("GET", "OPTIONS")
-	router.Handle("/account/register", accounts.Register).Methods("GET", "OPTIONS")
+	router.Handle("/account/login", accounts.Login).Methods("POST", "OPTIONS")
+	router.Handle("/account/register", accounts.Register).Methods("POST", "OPTIONS")
 
 	origins := handlers.AllowedOrigins([]string{"*"})
 	headers := handlers.AllowedHeaders([]string{"Content-Type"})
 	methods := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"})
+	// headers := handlers.AllowedHeaders([]string{"*"})
+	// methods := handlers.AllowedMethods([]string{"*"})
+
 	err = http.ListenAndServe(":"+strconv.Itoa(int(settings.Port)), handlers.CORS(origins, headers, methods)(router))
 	return
 }

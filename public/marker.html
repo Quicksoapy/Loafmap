@@ -1,4 +1,4 @@
-<form onsubmit="validateForm()">
+<form onsubmit="submitForm()">
     <div class="container">
       <label>description:</label>
       <input type="text" placeholder="Enter description" name="desc"><br>
@@ -11,7 +11,7 @@
   </form> 
   
   <script>
-    function validateForm() {
+    function submitForm() {
         var latitude = document.getElementById("latitudeInput").value.trim();
         var longitude = document.getElementById("longitudeInput").value.trim();
 

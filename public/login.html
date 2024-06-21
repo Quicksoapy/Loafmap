@@ -1,14 +1,47 @@
-<form action="action_page.php" method="post">
+<form onsubmit="login(event)">
     <div class="container">
       <label for="uname"><b>Username</b></label>
-      <input type="text" placeholder="Enter Username" name="uname" required>
+      <input type="text" placeholder="Enter Username" id="username" required>
       <br>
       <label for="psw"><b>Password</b></label>
-      <input type="password" placeholder="Enter Password" name="psw" required>
+      <input type="password" placeholder="Enter Password" id="password" required>
       <br>
       <button type="submit">Login</button>
-      <label>
-        <input type="checkbox" checked="checked" name="remember"> Remember me
-      </label>
     </div>
   </form> 
+
+  <script>
+    async function login(event) {
+        event.preventDefault(); // Prevent the form from submitting the default way
+
+        try {
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value.trim();
+
+        console.log("Attempting to log in with:", { username, password });
+
+        const response = await fetch("http://127.0.0.1:4564/account/login", {
+            method: "POST",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "same-origin",
+            headers: {
+            "Content-Type": "application/json",
+            },
+            redirect: "follow",
+            referrerPolicy: "no-referrer",
+            body: JSON.stringify({ username, password }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Response from server:", data);
+        // Handle successful login (e.g., redirect to another page or show a success message)
+        } catch (error) {
+        console.error("Error during login:", error);
+        }
+    }
+  </script>
