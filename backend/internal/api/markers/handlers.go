@@ -1,11 +1,15 @@
 package markers
 
 import (
+	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"loafmap/backend/internal/database"
 	"log"
 	"net/http"
 	"strconv"
+
+	exifremove "github.com/scottleedavis/go-exif-remove"
 )
 
 var GetAll = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -47,8 +51,24 @@ var Add = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	img := r.URL.Query().Get("image")
+
+	imgDecoded, e := base64.StdEncoding.DecodeString(img)
+	if e != nil {
+		fmt.Println(e)
+	}
+
+	imgStrippedExif, err := exifremove.Remove(imgDecoded)
+
+	if err != nil {
+		fmt.Println(e)
+		return
+	}
+
+	imgEncoded := base64.StdEncoding.EncodeToString(imgStrippedExif)
+
 	m := database.Marker{UserId: uint(userId), Description: r.URL.Query().Get("description"), Latitude: r.URL.Query().Get("latitude"),
-		Longitude: r.URL.Query().Get("longitude"), ImageId: r.URL.Query().Get("imageid")}
+		Longitude: r.URL.Query().Get("longitude"), Base64EncodedString: imgEncoded}
 
 	database.Marker.Add(m)
 })
